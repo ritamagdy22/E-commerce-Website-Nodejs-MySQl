@@ -1,0 +1,36 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Store</title><link rel="stylesheet" href="style.css"></head><body>
+<header>
+  <a class="logo" href="/">Store</a><span class="spacer"></span>
+  <button onclick="toggleTheme()" title="Dark / light">🌓</button>
+  <button id="btnFav" onclick="showSaved('favorites')">♥ Favorites</button>
+  <button id="btnWish" onclick="showSaved('wishlist')">☆ Wishlist</button>
+  <button id="btnOrders" onclick="showOrders()">Orders</button>
+  <a id="adminLink" href="/admin.html" style="display:none"><button>Admin</button></a>
+  <button id="btnAuth" onclick="openModal('authModal')">Log in</button>
+  <button class="primary" onclick="openCart()">Cart <span class="badge" id="cartCount">0</span></button>
+</header>
+<main>
+  <div class="toolbar">
+    <input id="search" placeholder="Search products…">
+    <select id="category"><option value="">All categories</option></select>
+    <select id="sort"><option value="new">Newest</option><option value="low">Price: low → high</option><option value="high">Price: high → low</option><option value="rating">Top rated</option></select>
+    <button id="viewToggle" title="Grid / list">☰ List</button>
+  </div>
+  <h2 id="title" style="margin-top:0"></h2>
+  <div id="products" class="grid"></div>
+</main>
+
+<div class="modal" id="authModal"><div class="box">
+  <h3 id="authTitle">Log in</h3>
+  <input id="aName" placeholder="Name" style="display:none"><input id="aEmail" type="email" placeholder="Email"><input id="aPass" type="password" placeholder="Password (6+ characters)">
+  <button class="primary" onclick="submitAuth()">Continue</button>
+  <button onclick="switchAuth()" id="authSwitch">Need an account? Sign up</button>
+  <button onclick="closeModal('authModal')">Close</button>
+</div></div>
+
+<div class="modal" id="productModal"><div class="box" id="productBox"></div></div>
+<div class="modal" id="cartModal"><div class="box" id="cartBox"></div></div>
+<div class="modal" id="infoModal"><div class="box" id="infoBox"></div></div>
+<div class="toast" id="toast"></div>
+<script src="common.js"></script><script src="app.js"></script></body></html>

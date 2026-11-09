@@ -1,0 +1,47 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin · Store</title><link rel="stylesheet" href="style.css"></head><body>
+<header><a class="logo" href="/">Store · Admin</a><span class="spacer"></span><button onclick="toggleTheme()">🌓</button><button onclick="logout()">Logout</button></header>
+<main>
+  <div class="row between"><h2>Products</h2><button class="primary" onclick="edit()">+ Add product</button></div>
+  <div style="overflow:auto"><table><thead><tr><th></th><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th></th></tr></thead><tbody id="rows"></tbody></table></div>
+  <h2>Orders</h2>
+  <div style="overflow:auto"><table><thead><tr><th>#</th><th>Customer</th><th>Items</th><th>Total</th><th>Date</th></tr></thead><tbody id="orders"></tbody></table></div>
+</main>
+<div class="modal" id="formModal"><div class="box">
+  <h3 id="fTitle" style="margin:0"></h3>
+  <input id="fName" placeholder="Name"><textarea id="fDesc" placeholder="Description" rows="3"></textarea>
+  <div class="row"><input id="fPrice" type="number" step="0.01" min="0" placeholder="Price" style="flex:1"><input id="fStock" type="number" min="0" placeholder="Stock" style="flex:1"></div>
+  <input id="fCat" placeholder="Category"><input id="fUrl" placeholder="Image URL (or upload a file below)">
+  <input id="fFile" type="file" accept="image/*">
+  <button class="primary" onclick="save()">Save</button><button onclick="document.getElementById('formModal').classList.remove('open')">Cancel</button>
+</div></div>
+<div class="toast" id="toast"></div>
+<script src="common.js"></script>
+<script>
+if (!state.user || state.user.role !== 'admin') location.href = '/';
+let list = [], editId = null;
+async function load() {
+  list = await api('/api/products');
+  $('#rows').innerHTML = list.map(p => `<tr><td><img src="${esc(p.image || FALLBACK)}" onerror="this.onerror=null;this.src=FALLBACK"></td><td>${esc(p.name)}</td><td>${esc(p.category)}</td><td>${money(p.price)}</td><td>${p.stock}</td>
+    <td><button onclick="edit(${p.id})">Edit</button> <button class="danger" onclick="del(${p.id})">Delete</button></td></tr>`).join('');
+  const o = await api('/api/orders');
+  $('#orders').innerHTML = o.map(x => `<tr><td>${x.id}</td><td>${esc(x.customer)}</td><td>${esc(x.items)}</td><td>${money(x.total)}</td><td>${new Date(x.created_at).toLocaleString()}</td></tr>`).join('') || '<tr><td colspan=5 class="muted">No orders yet</td></tr>';
+}
+function edit(id) {
+  editId = id || null; const p = list.find(x => x.id === id) || {};
+  $('#fTitle').textContent = id ? 'Edit product' : 'Add product';
+  $('#fName').value = p.name || ''; $('#fDesc').value = p.description || ''; $('#fPrice').value = p.price ?? ''; $('#fStock').value = p.stock ?? '';
+  $('#fCat').value = p.category || ''; $('#fUrl').value = p.image || ''; $('#fFile').value = '';
+  $('#formModal').classList.add('open');
+}
+async function save() {
+  const fd = new FormData();
+  fd.append('name', $('#fName').value); fd.append('description', $('#fDesc').value); fd.append('price', $('#fPrice').value);
+  fd.append('stock', $('#fStock').value); fd.append('category', $('#fCat').value); fd.append('imageUrl', $('#fUrl').value);
+  if ($('#fFile').files[0]) fd.append('image', $('#fFile').files[0]);
+  try { await api(editId ? '/api/products/' + editId : '/api/products', { method: editId ? 'PUT' : 'POST', body: fd });
+    $('#formModal').classList.remove('open'); toast('Saved'); load(); } catch (e) { toast(e.message); }
+}
+async function del(id) { if (!confirm('Delete this product?')) return; try { await api('/api/products/' + id, { method: 'DELETE' }); load(); } catch (e) { toast(e.message); } }
+load();
+</script></body></html>
