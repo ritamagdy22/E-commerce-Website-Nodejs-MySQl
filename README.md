@@ -213,15 +213,24 @@ Protected routes expect the header `Authorization: Bearer <token>`.
 
 ---
 
-## 🔮 Roadmap
-
-- [ ] Real payments with Stripe
-- [ ] Order status management (shipped, delivered) from the admin panel
-- [ ] Pagination for large catalogs
-- [ ] Automated tests (Jest + Supertest)
-- [ ] Docker setup and cloud deployment
+## Admin dashboard
+On the store page, click Log in and sign in with admin@store.com / Admin123!, or the ADMIN_EMAIL and ADMIN_PASSWORD from your .env.
+An Admin button will appear in the header next to Log in. Click it, or go straight to the address above. 
+http://localhost:3000/admin.html.
 
 ---
+
+
+<img width="1906" height="902" alt="image" src="https://github.com/user-attachments/assets/94aaf578-1fa7-4f5b-9dbd-ece519d1337a" />
+
+
+<img width="1907" height="907" alt="image" src="https://github.com/user-attachments/assets/d794a459-0c7f-4dd9-ae99-4eb448507976" />
+
+
+
+
+https://github.com/user-attachments/assets/38413fb9-570e-4b65-b582-1d711df46544
+
 
 ## 👩‍💻 Author
 
